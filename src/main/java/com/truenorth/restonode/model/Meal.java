@@ -21,6 +21,6 @@ public class Meal {
 
 	private String name;
 	
-	private int quantity;
+	private int qty;
 	
 }

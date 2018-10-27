@@ -11,13 +11,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.google.maps.model.Duration;
 import com.truenorth.restonode.model.DeliveryOrder;
 import com.truenorth.restonode.model.Rating;
 import com.truenorth.restonode.model.Restaurant;
 import com.truenorth.restonode.service.RestonodeService;
 
 @RestController
-public class RestaurantController {
+public class RestonodeController {
 
 	@Autowired
 	private RestonodeService service;
@@ -53,12 +54,11 @@ public class RestaurantController {
 	 * @param id
 	 * @param order
 	 * @return ETA based on user and restaurant locations
+	 * @throws Exception 
 	 */
 	@PutMapping("/restaurants/{id}/order")
-	Long processDeliveryOrder(@PathVariable Long id, @RequestBody DeliveryOrder order) {
-		
-		
-		return null;
+	Duration createDeliveryOrder(@PathVariable Long id, @RequestBody DeliveryOrder order) throws Exception {
+		return service.createDeliveryOrder(id, order);
 	}
 
 }
