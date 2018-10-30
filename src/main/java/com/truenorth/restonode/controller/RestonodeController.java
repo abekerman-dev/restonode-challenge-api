@@ -56,9 +56,9 @@ public class RestonodeController {
 	 * @return ETA based on user and restaurant locations
 	 * @throws Exception 
 	 */
-	@PutMapping("/restaurants/{id}/order")
-	Duration createDeliveryOrder(@PathVariable Long id, @RequestBody DeliveryOrder order) throws Exception {
-		return service.createDeliveryOrder(id, order);
+	@PutMapping("/restaurants/{restaurantId}/order")
+	Duration createDeliveryOrder(@PathVariable Long restaurantId, @RequestBody DeliveryOrder order) throws Exception {
+		return service.createDeliveryOrder(restaurantId, order);
 	}
 
 }

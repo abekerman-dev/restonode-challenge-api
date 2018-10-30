@@ -22,5 +22,11 @@ public class Meal {
 	private String name;
 	
 	private int qty;
+
+	public Meal(String name, int qty) {
+		super();
+		this.name = name;
+		this.qty = qty;
+	}
 	
 }

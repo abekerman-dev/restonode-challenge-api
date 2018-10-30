@@ -10,7 +10,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.maps.model.LatLng;
 
 import lombok.Data;
@@ -27,16 +26,18 @@ public class Restaurant {
 	private String name;
 
 	private LatLng location;
+	
+	private String email;
 
-//	@ToString.Exclude
-//	@JsonIgnore
+	@ToString.Exclude
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "restaurant_id")
 	private List<Rating> ratings = new ArrayList<>();
 
-	public Restaurant(String name, LatLng location) {
+	public Restaurant(String name, LatLng location, String email) {
 		this.name = name;
 		this.location = location;
+		this.email = email;
 	}
 
 	public void addRating(Rating rating) {
