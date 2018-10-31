@@ -17,7 +17,7 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - DISTANCE_MATRIX_API_KEY=AIzaSyCpdWlCVR_vz2LiH42OSJnMEIhDjntdeoA
+      - DISTANCE_MATRIX_API_KEY=<PASTE DISTANCE MATRIX API KEY HERE - REAL KEY NOT PUSHED TO GITHUB> 
       - RABBIT_HOST=rabbitmq
 
 #  db:
