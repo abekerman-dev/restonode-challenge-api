@@ -15,8 +15,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class RealDistanceMatrixClient implements DistanceMatrixClient {
 
-	@Value("${distanceMatrtix.apiKey}")
-	private String googleApiKey;
+	@Value("${DISTANCE_MATRIX_API_KEY}")
+	private String apiKey;
 
 	/**
 	 * Invokes google maps DistanceMatrix API in order to retrieve the trip duration
@@ -28,8 +28,8 @@ public class RealDistanceMatrixClient implements DistanceMatrixClient {
 	 * @throws Exception
 	 */
 	public Duration calculateDuration(LatLng origin, LatLng destination) throws Exception {
-
-		GeoApiContext context = new GeoApiContext.Builder().apiKey(googleApiKey).build();
+		log.debug("apiKey=" + apiKey);
+		GeoApiContext context = new GeoApiContext.Builder().apiKey(apiKey).build();
 		DistanceMatrix distanceMatrix = DistanceMatrixApi.newRequest(context).origins(origin).destinations(destination)
 				.await();
 		final Duration duration = distanceMatrix.rows[0].elements[0].duration;

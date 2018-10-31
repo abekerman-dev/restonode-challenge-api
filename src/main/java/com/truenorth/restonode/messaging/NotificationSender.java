@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class NotificationSender extends AbstractRabbitMQSender {
 
-	@Value("${rabbitmq.routingKey.notification}")
+	@Value("${spring.rabbitmq.routingKey.notification}")
 	private String routingKey;
 	
 	@Override

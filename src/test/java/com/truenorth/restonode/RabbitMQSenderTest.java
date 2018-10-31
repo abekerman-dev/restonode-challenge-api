@@ -25,7 +25,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.maps.model.Duration;
 import com.truenorth.restonode.messaging.NotificationSender;
 import com.truenorth.restonode.messaging.OrderSender;
@@ -46,12 +45,12 @@ public class RabbitMQSenderTest {
 	private static DeliveryOrder order = createOrder();
 
 	@Test
-	public void testNotificationSender() throws JsonProcessingException {
+	public void testNotificationSender() throws Exception {
 		notificationSender.send(duration);
 	}
 
 	@Test
-	public void testOrderSender() throws JsonProcessingException {
+	public void testOrderSender() throws Exception {
 		orderSender.send(new OrderMessage("abekerman@gmail.com", order));
 	}
 

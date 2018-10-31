@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class OrderSender extends AbstractRabbitMQSender {
 
-	@Value("${rabbitmq.routingKey.order}")
+	@Value("${spring.rabbitmq.routingKey.order}")
 	private String routingKey;
 	
 	@Override

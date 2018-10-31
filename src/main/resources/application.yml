@@ -1,0 +1,18 @@
+logging:
+  level:
+    org.springframework.web: INFO
+    com.truenorth.restonode: DEBUG
+
+spring:
+  rabbitmq:
+    host: ${RABBIT_HOST}
+    exchange:
+      name: restonode_topic_exchange
+    routingKey:
+      notification: restonode_routingKey_notification
+      order: restonode_routingKey_order
+
+spring.h2.console.enabled: true
+spring.jpa.hibernate.ddl-auto: create-drop
+spring.jpa.properties:
+  hibernate.format_sql: true
