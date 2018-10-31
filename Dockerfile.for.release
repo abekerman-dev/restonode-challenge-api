@@ -1,7 +1,0 @@
-FROM maven:3.5.4-jdk-8-alpine
-WORKDIR /usr/src/restonode-api-src
-COPY . /usr/src/restonode-api-src
-RUN mvn package -DskipTests
-WORKDIR /usr/src/restonode-api-app
-RUN cp /usr/src/restonode-api-src/target/*.jar ./app.jar
-CMD ["java", "-jar", "app.jar"]
