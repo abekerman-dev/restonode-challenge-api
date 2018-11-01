@@ -30,7 +30,7 @@ public class Restaurant {
 	private String email;
 
 	@ToString.Exclude
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name = "restaurant_id")
 	private List<Rating> ratings = new ArrayList<>();
 

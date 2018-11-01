@@ -9,6 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -27,14 +28,20 @@ public class DeliveryOrder {
 	@JsonIgnore
 	private Long id;
 
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	@ManyToOne
+	@JoinColumn(name = "restaurant_id")
+	private Restaurant restaurant;
+	
+	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name="order_id")
 	private List<Meal> meals = new ArrayList<>();
 
 	private BigDecimal totalAmount;
 
+	// So that the restaurant will know where to deliver this order
 	private String address;
 
+	// Used only to calculate this order's ETA
 	private LatLng destination;
 
 }

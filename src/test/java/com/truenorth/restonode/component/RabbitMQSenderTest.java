@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.truenorth.restonode;
+package com.truenorth.restonode.component;
 
 import static com.truenorth.restonode.util.TestUtils.createDuration;
 import static com.truenorth.restonode.util.TestUtils.createOrder;
@@ -22,36 +22,32 @@ import static com.truenorth.restonode.util.TestUtils.createOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.google.maps.model.Duration;
-import com.truenorth.restonode.messaging.NotificationSender;
-import com.truenorth.restonode.messaging.OrderSender;
-import com.truenorth.restonode.model.DeliveryOrder;
-import com.truenorth.restonode.model.OrderMessage;
+import com.truenorth.restonode.messaging.RabbitMQSender;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class RabbitMQSenderTest {
 
 	@Autowired
-	private NotificationSender notificationSender;
+	@Qualifier("notificationSender")
+	private RabbitMQSender notificationSender;
 
 	@Autowired
-	private OrderSender orderSender;
-
-	private static Duration duration = createDuration();
-	private static DeliveryOrder order = createOrder();
+	@Qualifier("orderSender")
+	private RabbitMQSender orderSender;
 
 	@Test
 	public void testNotificationSender() throws Exception {
-		notificationSender.send(duration);
+		notificationSender.send(createDuration());
 	}
 
 	@Test
 	public void testOrderSender() throws Exception {
-		orderSender.send(new OrderMessage("abekerman@gmail.com", order));
+		orderSender.send(createOrder());
 	}
 
 }

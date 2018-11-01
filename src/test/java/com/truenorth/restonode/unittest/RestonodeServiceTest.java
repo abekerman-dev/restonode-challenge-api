@@ -1,100 +1,104 @@
-package com.truenorth.restonode;
+package com.truenorth.restonode.unittest;
 
 import static com.truenorth.restonode.util.TestUtils.createOrder;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import com.google.maps.model.Duration;
-import com.google.maps.model.LatLng;
-import com.truenorth.restonode.distanceclient.RealDistanceMatrixClient;
+import com.truenorth.restonode.distanceclient.DistanceMatrixClient;
 import com.truenorth.restonode.messaging.NotificationSender;
 import com.truenorth.restonode.messaging.OrderSender;
 import com.truenorth.restonode.model.DeliveryOrder;
 import com.truenorth.restonode.model.Restaurant;
 import com.truenorth.restonode.repository.DeliveryOrderRepository;
 import com.truenorth.restonode.repository.RestaurantRepository;
-import com.truenorth.restonode.service.RestonodeService;
+import com.truenorth.restonode.service.RestonodeServiceImpl;
 import com.truenorth.restonode.util.TestUtils;
 
+@RunWith(MockitoJUnitRunner.class)
 public class RestonodeServiceTest {
 
-	private RestonodeService service;
+	@Mock
 	private RestaurantRepository restaurantRepo;
+
+	@Mock
 	private DeliveryOrderRepository orderRepo;
-	private RealDistanceMatrixClient distanceMatrixClient;
+
+	@Mock
 	private NotificationSender notificationSender;
+
+	@Mock
 	private OrderSender orderSender;
-	
+
+	@Mock
+	private DistanceMatrixClient distanceMatrixClient;
+
+	private RestonodeServiceImpl service;
+
 	@Before
 	public void setup() {
-		restaurantRepo = mock(RestaurantRepository.class);
-		orderRepo = mock(DeliveryOrderRepository.class);
-		distanceMatrixClient = mock(RealDistanceMatrixClient.class);
-		notificationSender = mock(NotificationSender.class);
-		orderSender = mock(OrderSender.class);
-		
-		service = new RestonodeService();
+		MockitoAnnotations.initMocks(this);
+		service = new RestonodeServiceImpl();
 		service.setRestaurantRepo(restaurantRepo);
 		service.setOrderRepo(orderRepo);
 		service.setDistanceMatrixClient(distanceMatrixClient);
 		service.setNotificationSender(notificationSender);
 		service.setOrderSender(orderSender);
 	}
-	
+
 	@Test
 	public void testCreateDeliveryOrder() throws Exception {
 		// TODO improve method name ( when - given - should or similar)
-		DeliveryOrder order = createOrder();
-		Restaurant restaurant = new Restaurant("Spiagge Di Napoli", new LatLng(-34.6206867, -58.4155187), "abekerman@gmail.com");
-		Duration duration = TestUtils.createDuration();
+		DeliveryOrder newOrder = createOrder();
+		Restaurant restaurant = newOrder.getRestaurant();
+		Duration mockDuration = TestUtils.createDuration();
 
-		when(restaurantRepo
-			.findById(123L))
-			.thenReturn(Optional.of(restaurant));
-		
-		when(distanceMatrixClient
-			.calculateDuration(restaurant.getLocation(), order.getDestination()))
-			.thenReturn(duration);
-		Duration expectedDuration = service.createDeliveryOrder(123L, order);
-	
-		Mockito.verify(orderRepo).save(order);
-		
-		assertEquals(expectedDuration, duration);
+		when(restaurantRepo.findById(1L)).thenReturn(Optional.of(restaurant));
+
+		when(distanceMatrixClient.calculateDuration(restaurant.getLocation(), newOrder.getDestination()))
+				.thenReturn(mockDuration);
+
+		Duration realDuration = service.createDeliveryOrder(newOrder);
+		Mockito.verify(orderRepo).save(newOrder);
+		assertEquals(mockDuration, realDuration);
 	}
-	
+
 	@Test
 	public void testCreateDeliveryOrderRestaurantNotFound() {
 		// TODO improve method name ( when - given - should or similar)
-		// TODO mock an Optional empty restaurant as return of findById (emulate non-existing id)
+		// TODO mock an Optional empty restaurant as return of findById (emulate
+		// non-existing id)
 		// TODO force EXPECT Exception
 	}
-	
+
 	@Test
 	public void testFindRestaurantsByRating() {
-		
+
 	}
-	
+
 	@Test
 	public void testFindRestaurantsNoRating() {
-		
+
 	}
-	
+
 	@Test
 	public void testAddRestaurantRating() {
-		
+
 	}
-	
+
 	@Test
 	public void testAddRestaurantNotFoundRating() {
 		// TODO force EXPECT Exception
 	}
-	
 
 }

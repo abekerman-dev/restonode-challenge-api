@@ -13,7 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Component
 @Slf4j
-public class RealDistanceMatrixClient implements DistanceMatrixClient {
+public class GoogleMapsDistanceMatrixClient implements DistanceMatrixClient {
 
 	@Value("${DISTANCE_MATRIX_API_KEY}")
 	private String apiKey;

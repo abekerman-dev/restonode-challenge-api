@@ -6,7 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,7 +30,7 @@ public class RestonodeController {
 	 * @param id
 	 * @return
 	 */
-	@PutMapping("/restaurants/{id}/rating")
+	@PostMapping("/restaurants/{id}/rating")
 	public Restaurant addRestaurantRating(@PathVariable Long id, @RequestBody Rating rating) {
 		return service.addRestaurantRating(id, rating);
 	}
@@ -56,9 +56,9 @@ public class RestonodeController {
 	 * @return ETA based on user and restaurant locations
 	 * @throws Exception 
 	 */
-	@PutMapping("/restaurants/{restaurantId}/order")
-	Duration createDeliveryOrder(@PathVariable Long restaurantId, @RequestBody DeliveryOrder order) throws Exception {
-		return service.createDeliveryOrder(restaurantId, order);
+	@PostMapping("/orders")
+	Duration createDeliveryOrder(@RequestBody DeliveryOrder order) throws Exception {
+		return service.createDeliveryOrder(order);
 	}
 
 }
