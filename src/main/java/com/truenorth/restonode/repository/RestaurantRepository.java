@@ -9,7 +9,7 @@ import com.truenorth.restonode.model.Restaurant;
 
 public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
 	
-	@Query("SELECT r from Restaurant r JOIN r.ratings ratings ON ratings.rating = ?1")
+	@Query("select r from Restaurant r join r.ratings ratings on ratings.rating = ?1")
 	List<Restaurant> findByRating(int rating);
 	
 }

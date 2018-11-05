@@ -19,24 +19,23 @@ public class GoogleMapsDistanceMatrixClient implements DistanceMatrixClient {
 	private String apiKey;
 
 	/**
-	 * Invokes google maps DistanceMatrix API in order to retrieve the trip duration
-	 * given an origin and a destination
+	 * Invokes google maps DistanceMatrix API in order to retrieve the ETA given an
+	 * origin and a destination
 	 * 
 	 * @param origin
 	 * @param destination
 	 * @return
 	 * @throws Exception
 	 */
-	public Duration calculateDuration(LatLng origin, LatLng destination) throws Exception {
-		log.debug("apiKey=" + apiKey);
+	public String calculateETA(LatLng origin, LatLng destination) throws Exception {
+		log.debug("google apiKey=" + apiKey);
 		GeoApiContext context = new GeoApiContext.Builder().apiKey(apiKey).build();
 		DistanceMatrix distanceMatrix = DistanceMatrixApi.newRequest(context).origins(origin).destinations(destination)
 				.await();
-		final Duration duration = distanceMatrix.rows[0].elements[0].duration;
-
+		Duration duration = distanceMatrix.rows[0].elements[0].duration;
 		log.debug("ETA between " + origin + " and " + destination + " is " + duration);
 
-		return duration;
+		return duration.humanReadable;
 	}
 
 }

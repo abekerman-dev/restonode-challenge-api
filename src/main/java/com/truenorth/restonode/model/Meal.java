@@ -1,32 +1,39 @@
 package com.truenorth.restonode.model;
 
+import java.math.BigDecimal;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Data;
-import lombok.ToString;
 
-@Data
 @Entity
-public class Meal {
-	
+@Data
+public class Meal implements Resource {
+
 	@Id
 	@GeneratedValue
-	@ToString.Exclude
-	@JsonIgnore
 	private Long id;
 
-	private String name;
-	
-	private int qty;
+	@ManyToOne
+	@JoinColumn(name = "restaurant_id")
+	@JsonIgnore
+	private Restaurant restaurant;
 
-	public Meal(String name, int qty) {
+	private String name;
+
+	private BigDecimal price;
+
+	public Meal(Restaurant restaurant, String name, BigDecimal price) {
 		super();
+		this.restaurant = restaurant;
 		this.name = name;
-		this.qty = qty;
+		this.price = price;
 	}
-	
+
 }

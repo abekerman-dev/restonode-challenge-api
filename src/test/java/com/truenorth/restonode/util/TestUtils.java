@@ -11,23 +11,25 @@ import com.truenorth.restonode.model.Restaurant;
 
 public class TestUtils {
 
-	public static DeliveryOrder createOrder() {
-		final DeliveryOrder order = new DeliveryOrder();
+	// FIXME whole method
+//	public static DeliveryOrder createOrder() {
+//		final DeliveryOrder order = new DeliveryOrder();
+//
+//		Restaurant restaurant = createRestaurant();
+//		order.setRestaurant(restaurant);
+//		order.setAddress("Fake St. 123");
+//		order.setDestination(new LatLng(-34.598284, -58.4175797));
+//
+//		Meal noodles = new Meal("Noodles", restaurant);
+//		Meal cheeseburger = new Meal("Cheeseburger", restaurant);
+//		order.setMeals(Arrays.asList(noodles, cheeseburger));
+//
+//		order.setTotalAmount(BigDecimal.valueOf(123.45));
+//
+//		return order;
+//	}
 
-		order.setRestaurant(createRestaurant());
-		order.setAddress("Fake St. 123");
-		order.setDestination(new LatLng(-34.598284, -58.4175797));
-
-		Meal noodles = new Meal("Noodles", 1);
-		Meal cheeseburger = new Meal("Cheeseburger", 2);
-		order.setMeals(Arrays.asList(noodles, cheeseburger));
-
-		order.setTotalAmount(BigDecimal.valueOf(123.45));
-
-		return order;
-	}
-
-	private static Restaurant createRestaurant() {
+	public static Restaurant createRestaurant() {
 		Restaurant restaurant = new Restaurant("Spiagge Di Napoli", new LatLng(-34.6206867, -58.4155187), "abekerman@gmail.com");
 		restaurant.setId(1L);
 		
