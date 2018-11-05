@@ -50,8 +50,8 @@ public class RestonodeServiceImpl implements RestonodeService {
 
 	// FIXME switch to googleMapsDistanceMatrixClient
 	@Autowired
-	@Qualifier("mockDistanceMatrixClient")
-//	@Qualifier("googleMapsDistanceMatrixClient")
+//	@Qualifier("mockDistanceMatrixClient")
+	@Qualifier("googleMapsDistanceMatrixClient")
 	private DistanceMatrixClient distanceMatrixClient;
 
 	@Override
