@@ -36,7 +36,7 @@ In order to get the other two components up and running as well, please refer to
 
 The three repos comprising *Restonode* are *docker-ready*, so it's highly advised getting the whole system to run through this method. How? Simple!
 
-Just run `docker-compose up` and it'll trigger the build of a maven image with this API code as a SpringBoot application to run on top of it, alongside a RabbitMQ image (once built it'll become a service) which will be shared between this API and the order messaging service.
+Just run `docker-compose up` and it'll trigger the build of a maven image with this API code as a SpringBoot application to run on top of it, alongside a RabbitMQ image (later a service) which will be shared between this API and the order messaging service.
 
 > Note: The first time it gets executed it'll take quite some time to download both RabbitMQ and maven/jdk images as well as the `pom.xml` dependencies, so be patient while it's doing its job!
 
@@ -64,9 +64,25 @@ The API consists of the following core components:
 
 ### Database
 
-The database is a plain H2 in-memory database which comes "out of the box" with Spring Initializr. No big changes should be made in order to have a more robust, production-ready DB engine in place of it (please see [here](#wishlist-db) for more details)
+The database is a plain H2 in-memory database which comes "out of the box" with Spring Initializr. No big changes should be made in order to have a more robust, production-ready DB engine in place of it (please see [here](#wishlist-db) for more details).
 
-## Wishlist, a.k.a what's been left outside (lack of time is to blame!)
+> The application creates initial sample data to test the API against, but this procedure should be modified for production-like environments: it can be either skipped (this can be easily achieved by commenting out - or deleting - the `StartupRunner` class) or further enhanced to set up real production data.
+
+## Wishlist, a.k.a what's been left outside and I wish could sometime get in there (lack of time is to blame!)
+
+There are a number of things that had to be left outside this application just because of lack of time, not desire:
+
+1. When customers create a delivery order, it would be nice if they had the ability to indicate the number of meals they want for each meal they choose (not just one like it works now).
+
+2. As a developer, I would've liked to use Spring Data JPA more sophisticated features than plain `@Query` annotations such as *specifications* or *QBE (Query By Example)*. That would've helped me gain a bit more knowledge about it for future use.
+
+3. Although exceptions are somehow taken care of, I think a better job can be done especially facing the client side of the API when showing error messages. These could be wrapped in a JSON object with more detailed information than the current plain-text version.
+
+4. Googling up it turns out that, according to some, *constructor injection* has some advantages with respect to the "mainstream" `@Autowired` field injection - it's only I found out too late down the road to be able to try it :( so next time I set out to write a Spring application, I'll do it right off the bat!
+
+5. Gain deeper understanding on testing Spring applications (both unit & component testing) and using [Mockito](https://site.mockito.org/) - which, in my opinion, is a whole world in its own right!
+
+6. Have the API deployed somewhere in the cloud with e.g. AWS, CloudFoundry, etc.
 
 ### <a name="wishlist-db"></a>Database
 
