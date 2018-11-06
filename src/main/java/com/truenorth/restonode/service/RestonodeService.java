@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.truenorth.restonode.dto.CustomerNotificationMessage;
+import com.truenorth.restonode.exception.InvalidRatingException;
 import com.truenorth.restonode.exception.ResourceNotFoundException;
 import com.truenorth.restonode.exception.UnfinishedTransactionException;
 import com.truenorth.restonode.model.DeliveryOrder;
@@ -20,7 +21,7 @@ public interface RestonodeService {
 	 * @param rating
 	 * @return exception if no restaurant was found with parameter id
 	 */
-	Restaurant addRestaurantRating(Long restaurantId, Rating rating) throws ResourceNotFoundException;
+	Restaurant addRestaurantRating(Long restaurantId, Rating rating) throws ResourceNotFoundException, InvalidRatingException;
 
 	/**
 	 * Returns restaurants with the given integer rating and if the parameter is not

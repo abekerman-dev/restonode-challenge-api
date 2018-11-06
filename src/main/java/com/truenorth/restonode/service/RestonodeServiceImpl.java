@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -12,6 +13,8 @@ import org.springframework.stereotype.Service;
 import com.truenorth.restonode.distanceclient.DistanceMatrixClient;
 import com.truenorth.restonode.dto.CustomerNotificationMessage;
 import com.truenorth.restonode.dto.RestaurantOrderMessage;
+import com.truenorth.restonode.exception.InvalidOrderException;
+import com.truenorth.restonode.exception.InvalidRatingException;
 import com.truenorth.restonode.exception.ResourceNotFoundException;
 import com.truenorth.restonode.exception.UnfinishedTransactionException;
 import com.truenorth.restonode.messaging.RabbitMQSender;
@@ -48,14 +51,17 @@ public class RestonodeServiceImpl implements RestonodeService {
 	@Qualifier("orderSender")
 	private RabbitMQSender orderSender;
 
-	// FIXME switch to googleMapsDistanceMatrixClient
 	@Autowired
 //	@Qualifier("mockDistanceMatrixClient")
 	@Qualifier("googleMapsDistanceMatrixClient")
 	private DistanceMatrixClient distanceMatrixClient;
 
 	@Override
-	public Restaurant addRestaurantRating(Long restaurantId, Rating rating) throws ResourceNotFoundException {
+	public Restaurant addRestaurantRating(Long restaurantId, Rating rating)
+			throws ResourceNotFoundException, InvalidRatingException {
+		if (rating.getRating() < 1 || rating.getRating() > 5) {
+			throw new InvalidRatingException();
+		}
 		final Restaurant restaurant = getRestaurantById(restaurantId);
 		restaurant.addRating(rating);
 
@@ -69,22 +75,44 @@ public class RestonodeServiceImpl implements RestonodeService {
 
 	@Override
 	public CustomerNotificationMessage createDeliveryOrder(DeliveryOrder order) throws UnfinishedTransactionException {
-		CustomerNotificationMessage notificationMessage = null;
 		try {
-			order.setEta(distanceMatrixClient.calculateETA(order.getRestaurant().getLocation(), order.getDestination()));
+			final List<Meal> meals = order.getMeals();
+
+			validateOrder(meals);
+
+			order.setEta(distanceMatrixClient.calculateETA(order.getRestaurant()
+					.getLocation(), order.getDestination()));
 			order.setTotalAmount(calculateOrderTotalAmount(order));
 			order.setTimestamp(LocalDateTime.now());
+			
 			DeliveryOrder newOrder = orderRepo.save(order);
 			log.debug("Created:" + newOrder);
-			notificationMessage = CustomerNotificationMessage.fromOrder(newOrder);
+			
+			CustomerNotificationMessage notificationMessage = CustomerNotificationMessage.fromOrder(newOrder);
 			notificationSender.send(notificationMessage);
 			orderSender.send(RestaurantOrderMessage.fromOrder(newOrder));
+
+			return notificationMessage;
 		} catch (Exception e) {
 			log.error("INTERNAL SERVER ERROR", e);
 			throw new UnfinishedTransactionException(e);
 		}
+	}
 
-		return notificationMessage;
+	private void validateOrder(final List<Meal> meals) throws ResourceNotFoundException, InvalidOrderException {
+		if (meals.isEmpty()) {
+			throw new ResourceNotFoundException(Meal.class, meals.stream()
+					.map(Meal::getId)
+					.collect(Collectors.toList()));
+		}
+
+		boolean allMealsSameRestaurant = meals.stream()
+				.map(Meal::getRestaurant)
+				.allMatch(meals.get(0)
+						.getRestaurant()::equals);
+		if (!allMealsSameRestaurant) {
+			throw new InvalidOrderException();
+		}
 	}
 
 	@Override
@@ -96,7 +124,7 @@ public class RestonodeServiceImpl implements RestonodeService {
 	public List<DeliveryOrder> getOrders() {
 		return orderRepo.findAll();
 	}
-	
+
 	public Restaurant getRestaurantById(Long restaurantId) throws ResourceNotFoundException {
 		return restaurantRepo.findById(restaurantId)
 				.orElseThrow(() -> new ResourceNotFoundException(Restaurant.class, restaurantId));
@@ -114,9 +142,12 @@ public class RestonodeServiceImpl implements RestonodeService {
 
 		return restaurantRepo.save(restaurant);
 	}
-	
+
 	private BigDecimal calculateOrderTotalAmount(DeliveryOrder order) {
-		return order.getMeals().stream().map(Meal::getPrice).reduce(BigDecimal.ZERO, BigDecimal::add);
+		return order.getMeals()
+				.stream()
+				.map(Meal::getPrice)
+				.reduce(BigDecimal.ZERO, BigDecimal::add);
 	}
-	
+
 }

@@ -1,47 +1,54 @@
 package com.truenorth.restonode.util;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 
-import com.google.maps.model.Duration;
 import com.google.maps.model.LatLng;
 import com.truenorth.restonode.model.DeliveryOrder;
 import com.truenorth.restonode.model.Meal;
+import com.truenorth.restonode.model.Rating;
 import com.truenorth.restonode.model.Restaurant;
 
 public class TestUtils {
 
-	// FIXME whole method
-//	public static DeliveryOrder createOrder() {
-//		final DeliveryOrder order = new DeliveryOrder();
-//
-//		Restaurant restaurant = createRestaurant();
-//		order.setRestaurant(restaurant);
-//		order.setAddress("Fake St. 123");
-//		order.setDestination(new LatLng(-34.598284, -58.4175797));
-//
-//		Meal noodles = new Meal("Noodles", restaurant);
-//		Meal cheeseburger = new Meal("Cheeseburger", restaurant);
-//		order.setMeals(Arrays.asList(noodles, cheeseburger));
-//
-//		order.setTotalAmount(BigDecimal.valueOf(123.45));
-//
-//		return order;
-//	}
+	public static final String MOCK_ETA = "30 minutes";
 
-	public static Restaurant createRestaurant() {
-		Restaurant restaurant = new Restaurant("Spiagge Di Napoli", new LatLng(-34.6206867, -58.4155187), "abekerman@gmail.com");
+	public static DeliveryOrder getMockOrder() {
+
+		Restaurant restaurant = getMockRestaurant();
+		Meal noodles = new Meal(restaurant, "Noodles", BigDecimal.valueOf(200));
+		Meal cheeseburger = new Meal(restaurant, "Cheeseburger", BigDecimal.valueOf(100));
+
+		return new DeliveryOrder(Arrays.asList(noodles, cheeseburger), "Fake St. 123",
+				new LatLng(-34.598284, -58.4175797));
+	}
+
+	public static DeliveryOrder getMockOrderWithId() {
+		final DeliveryOrder order = getMockOrder();
+		order.setId(1L);
+		order.setTimestamp(LocalDateTime.now());
+
+		return order;
+	}
+
+	public static Restaurant getMockRestaurant() {
+		Restaurant restaurant = new Restaurant("Spiagge Di Napoli", new LatLng(-34.6206867, -58.4155187),
+				"info@spiagge.com.ar");
 		restaurant.setId(1L);
-		
+
 		return restaurant;
 	}
 
-	public static Duration createDuration() {
-		final Duration duration = new Duration();
-		duration.inSeconds = 1800;
-		duration.humanReadable = "30 minutes";
+	public static Restaurant getMockRestaurantWithRating() {
+		Restaurant restaurant = getMockRestaurant();
+		restaurant.addRating(new Rating(1));
 
-		return duration;
+		return restaurant;
+	}
+
+	public static String getMockInvalidRatingAsJson() {
+		return "{ \"rating\": -1 }";
 	}
 
 }

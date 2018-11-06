@@ -1,19 +1,36 @@
 package com.truenorth.restonode.unittest;
 
+import static com.truenorth.restonode.util.TestUtils.MOCK_ETA;
+import static com.truenorth.restonode.util.TestUtils.getMockOrder;
+import static com.truenorth.restonode.util.TestUtils.getMockOrderWithId;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import com.truenorth.restonode.distanceclient.DistanceMatrixClient;
+import com.truenorth.restonode.dto.CustomerNotificationMessage;
+import com.truenorth.restonode.dto.RestaurantOrderMessage;
 import com.truenorth.restonode.messaging.NotificationSender;
 import com.truenorth.restonode.messaging.OrderSender;
+import com.truenorth.restonode.model.DeliveryOrder;
 import com.truenorth.restonode.repository.DeliveryOrderRepository;
 import com.truenorth.restonode.repository.RestaurantRepository;
 import com.truenorth.restonode.service.RestonodeServiceImpl;
 
+/**
+ * Tests app's service class
+ * 
+ * @author andres
+ *
+ */
 @RunWith(MockitoJUnitRunner.class)
 public class RestonodeServiceTest {
 
@@ -32,63 +49,24 @@ public class RestonodeServiceTest {
 	@Mock
 	private DistanceMatrixClient distanceMatrixClient;
 
+	@InjectMocks
 	private RestonodeServiceImpl service;
 
 	@Before
 	public void setup() {
-		MockitoAnnotations.initMocks(this);
-		service = new RestonodeServiceImpl();
-		service.setRestaurantRepo(restaurantRepo);
-		service.setOrderRepo(orderRepo);
-		service.setDistanceMatrixClient(distanceMatrixClient);
-		service.setNotificationSender(notificationSender);
-		service.setOrderSender(orderSender);
-	}
-
-	// TODO improve method name ( when - given - should or similar)
-	// FIXME whole method
-//	@Test
-//	public void testCreateDeliveryOrder() throws Exception {
-//		DeliveryOrder newOrder = createOrder();
-//		Restaurant restaurant = newOrder.getRestaurant();
-//		Duration mockDuration = TestUtils.createDuration();
-//
-//		when(restaurantRepo.findById(1L)).thenReturn(Optional.of(restaurant));
-//
-//		when(distanceMatrixClient.calculateDuration(restaurant.getLocation(), newOrder.getDestination()))
-//				.thenReturn(mockDuration);
-//
-//		Duration realDuration = service.createDeliveryOrder(newOrder);
-//		Mockito.verify(orderRepo).save(newOrder);
-//		assertEquals(mockDuration, realDuration);
-//	}
-
-	@Test
-	public void testCreateDeliveryOrderRestaurantNotFound() {
-		// TODO improve method name ( when - given - should or similar)
-		// TODO mock an Optional empty restaurant as return of findById (emulate
-		// non-existing id)
-		// TODO force EXPECT Exception
+		initMocks(this);
 	}
 
 	@Test
-	public void testFindRestaurantsByRating() {
-
-	}
-
-	@Test
-	public void testFindRestaurantsNoRating() {
-
-	}
-
-	@Test
-	public void testAddRestaurantRating() {
-
-	}
-
-	@Test
-	public void testAddRestaurantNotFoundRating() {
-		// TODO force EXPECT Exception
+	public void testCreateDeliveryOrderWithValidOrderCreatesOrder() throws Exception {
+		DeliveryOrder order = getMockOrder();
+		when(distanceMatrixClient.calculateETA(order.getRestaurant().getLocation(), order.getDestination())).thenReturn(MOCK_ETA);
+		DeliveryOrder orderWithId = getMockOrderWithId();
+		when(orderRepo.save(order)).thenReturn(orderWithId);
+		CustomerNotificationMessage customerNotificationMessage = service.createDeliveryOrder(order);
+		assertEquals(Long.valueOf(1), customerNotificationMessage.getId());
+		verify(notificationSender).send(CustomerNotificationMessage.fromOrder(orderWithId));
+		verify(orderSender).send(RestaurantOrderMessage.fromOrder(orderWithId));
 	}
 
 }

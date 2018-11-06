@@ -19,29 +19,35 @@ import com.truenorth.restonode.exception.UnfinishedTransactionException;
  *
  */
 @ControllerAdvice
-public class ExceptionsHandlerAdvice {
+public class ExceptionHandlerAdvice {
 
+	// --- 400 exceptions ---
+	
 	@ResponseBody
 	@ExceptionHandler(InvalidRatingException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	String invalidRatingExceptionExceptionHandler(final InvalidRatingException ex) {
 		return ex.getMessage();
 	}
-
-	@ResponseBody
-	@ExceptionHandler(ResourceNotFoundException.class)
-	@ResponseStatus(HttpStatus.NOT_FOUND)
-	String resourcetNotFoundExceptionHandler(final ResourceNotFoundException ex) {
-		return ex.getMessage();
-	}
-
+	
 	@ResponseBody
 	@ExceptionHandler(InvalidOrderException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	String invalidOrderExceptionHandler(final InvalidOrderException ex) {
 		return ex.getMessage();
 	}
-
+	
+	// --- 404 exceptions ---
+	
+	@ResponseBody
+	@ExceptionHandler(ResourceNotFoundException.class)
+	@ResponseStatus(HttpStatus.NOT_FOUND)
+	String resourcetNotFoundExceptionHandler(final ResourceNotFoundException ex) {
+		return ex.getMessage();
+	}
+	
+	// --- 500 exceptions ---
+	
 	@ResponseBody
 	@ExceptionHandler(UnfinishedTransactionException.class)
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)

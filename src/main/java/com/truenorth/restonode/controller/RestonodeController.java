@@ -39,6 +39,42 @@ public class RestonodeController {
 	@Autowired
 	private RestonodeService service;
 
+	// --- GET handlers ---
+
+	/**
+	 * Endpoint to list all restaurants with the ability to filter by rating
+	 * 
+	 * @param rating Optional integer i between 1 and 5, used to filter restaurants
+	 *               with such rating (URI -> /restaurants?rating=i)
+	 * @return
+	 */
+	@GetMapping("/restaurants")
+	public List<Restaurant> getAllRestaurants(@RequestParam Optional<Integer> rating) {
+		return service.getRestaurants(rating);
+	}
+
+	/**
+	 * Endpoint to get a restaurant by id
+	 * 
+	 * @return
+	 */
+	@GetMapping("/restaurants/{id}")
+	public Restaurant getRestaurantById(@PathVariable Long id) throws ResourceNotFoundException {
+		return service.getRestaurantById(id);
+	}
+
+	/**
+	 * Endpoint to list all the orders
+	 * 
+	 * @return
+	 */
+	@GetMapping("/orders")
+	public List<DeliveryOrder> getAllOrders() {
+		return service.getOrders();
+	}
+
+	// --- POST handlers ---
+
 	/**
 	 * Endpoint to add a rating to an existing restaurant
 	 * 
@@ -52,75 +88,7 @@ public class RestonodeController {
 	public Restaurant addRestaurantRating(@PathVariable Long id, @RequestBody Rating rating)
 			throws InvalidRatingException, ResourceNotFoundException {
 
-		if (rating.getRating() < 1 || rating.getRating() > 5) {
-			throw new InvalidRatingException();
-		}
-
 		return service.addRestaurantRating(id, rating);
-	}
-
-	/**
-	 * Endpoint to list all restaurants with the ability to filter by rating
-	 * 
-	 * @param rating Optional integer between 1 and 5, used to filter restaurants
-	 *               with such rating
-	 * @return
-	 */
-	@GetMapping("/restaurants")
-	public List<Restaurant> getAllRestaurants(@RequestParam Optional<Integer> rating) {
-		return service.getRestaurants(rating);
-	}
-
-	/**
-	 * Endpoint to create a new DeliveryOrder. It first validates that all the input
-	 * meal IDs belong to the same restaurant, then it calls the service to create
-	 * the order
-	 * 
-	 * @param orderDto
-	 * @return
-	 * @throws InvalidOrderException          if not all meal IDs belong to the same
-	 *                                        restaurant
-	 * @throws ResourceNotFoundException      if no meals were found for the input
-	 *                                        IDs
-	 * @throws UnfinishedTransactionException if the service fails to finish the
-	 *                                        creation transaction
-	 */
-	@PostMapping("/orders")
-	public CustomerNotificationMessage createDeliveryOrder(@RequestBody DeliveryOrderRestRequestBody orderDto)
-			throws InvalidOrderException, ResourceNotFoundException, UnfinishedTransactionException {
-
-		final List<Meal> meals = service.findMealsInIdList(orderDto.getMealIds());
-		if (meals.isEmpty()) {
-			throw new ResourceNotFoundException(Meal.class, orderDto.getMealIds());
-		}
-
-		boolean allMealsSameRestaurant = meals.stream().map(Meal::getRestaurant)
-				.allMatch(meals.get(0).getRestaurant()::equals);
-		if (!allMealsSameRestaurant) {
-			throw new InvalidOrderException();
-		}
-
-		return service.createDeliveryOrder(new DeliveryOrder(meals, orderDto.getAddress(), orderDto.getDestination()));
-	}
-
-	/**
-	 * Endpoint to list all the orders
-	 * 
-	 * @return
-	 */
-	@GetMapping("/orders")
-	public List<DeliveryOrder> getAllOrders() {
-		return service.getOrders();
-	}
-
-	/**
-	 * Endpoint to get a restaurant by id
-	 * 
-	 * @return
-	 */
-	@GetMapping("/restaurants/{id}")
-	public Restaurant getRestaurantById(@PathVariable Long id) throws ResourceNotFoundException {
-		return service.getRestaurantById(id);
 	}
 
 	/**
@@ -146,6 +114,29 @@ public class RestonodeController {
 	public Restaurant addRestaurantMeal(@PathVariable Long id, @RequestBody Meal meal)
 			throws ResourceNotFoundException {
 		return service.addRestaurantMeal(id, meal);
+	}
+
+	/**
+	 * Endpoint to create a new DeliveryOrder. It first validates that all the input
+	 * meal IDs belong to the same restaurant, then it calls the service to create
+	 * the order
+	 * 
+	 * @param orderDto
+	 * @return
+	 * @throws InvalidOrderException          if not all meal IDs belong to the same
+	 *                                        restaurant
+	 * @throws ResourceNotFoundException      if no meals were found for the input
+	 *                                        IDs
+	 * @throws UnfinishedTransactionException if the service fails to finish the
+	 *                                        creation transaction
+	 */
+	@PostMapping("/orders")
+	public CustomerNotificationMessage createDeliveryOrder(@RequestBody DeliveryOrderRestRequestBody orderDto)
+			throws InvalidOrderException, ResourceNotFoundException, UnfinishedTransactionException {
+
+		final List<Meal> meals = service.findMealsInIdList(orderDto.getMealIds());
+
+		return service.createDeliveryOrder(new DeliveryOrder(meals, orderDto.getAddress(), orderDto.getDestination()));
 	}
 
 }
