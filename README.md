@@ -13,7 +13,7 @@ The former handles incoming RabbitMQ messages sent through this API upon creatio
 
 As the *Restonode* restaurants management is divided up into three components/repos, in order for the system to run as a whole each component must be launched individually, explained right below.
 
-> It's important to note that, although this API can be executed in isolation and accessed through an HTTP client such as Postman, this usage doesn't make much sense from a functionality perspective - only as an API test mechanism.
+> It's important to note that, although this API can be executed in isolation and accessed through an HTTP client such as [Postman](https://www.getpostman.com/), this usage doesn't make much sense from a functionality perspective - only as an API testing mechanism. If this is the intended use, [here is a Postman collection with the API endpoints and sample requests](https://www.getpostman.com/collections/480b4b5d3508b1d8a243).
 
 So in order to run the whole *Restonode* system there are two alternatives:
 
@@ -22,13 +22,23 @@ So in order to run the whole *Restonode* system there are two alternatives:
     
 > Of course, you'll first have to clone/download this repo and then follow either of the execution alternatives below.
 
+> In either case, you'll have to set up [Google Maps Distance Matrix API](https://developers.google.com/maps/documentation/distance-matrix/start) API key so that the application can work properly. See below for how to tackle it in both cases.
+
 So let's explore these alternatives further:
 
 ### Running manually
 
-This can be achieved simply by cloning/downloading this repo and executing `mvn spring-boot:run` ([maven](https://maven.apache.org/) must be already installed) but prior to this you'll have to make sure there's a RabbitMQ server instance running.
+First, clone or download this repo.
 
-In order to achieve this, run `docker-compose -f docker-compose-rabbitMQ-only.yml up` and it will launch a RabbitMQ instance in your `localhost` which this API can send messages to.
+The first step is to export the Google Maps Distance Matrix API key as an environment variable so the application can look it up and use it.
+
+> For security reasons the API key is not (and should not) be hardcoded as it would become part of a public repo, so the API key must be obtained somehow (e.g by email).
+
+In order to export it, you can use the `.env.sample` file in the root of this repo like this: copy it to a new .env file (`cp .env_sample .env`) and replace the right side of the equal sign with the actual API key. Then, run `source .env`. That's it.
+
+Next, we have to launch a RabbitMQ server instance. In order to achieve this, run `docker-compose -f docker-compose-rabbitMQ-only.yml up` and it will launch a RabbitMQ instance in your `localhost` which this API can send messages to.
+
+Lastly, let's run the application by executing `mvn spring-boot:run`. Of course, ([maven](https://maven.apache.org/) must be already installed).
 
 In order to get the other two components up and running as well, please refer to each repo's *README* file where you'll find instructions on how to do that just like here.
 
@@ -36,7 +46,9 @@ In order to get the other two components up and running as well, please refer to
 
 The three repos comprising *Restonode* are *docker-ready*, so it's highly advised getting the whole system to run through this method. How? Simple!
 
-Just run `docker-compose up` and it'll trigger the build of a maven image with this API code as a SpringBoot application to run on top of it, alongside a RabbitMQ image (later a service) which will be shared between this API and the order messaging service.
+As with the manual execution, here we also need to set up the API key in the environment variable, except that we do it differently with docker: find the `DISTANCE_MATRIX_API_KEY` entry under `environment` in the `docker-compose.yml` file in the root of this repo and replace the right side of the equal sign with the actual API key.
+
+Finally, run `docker-compose up` and it'll trigger the build of a maven image with this API code as a SpringBoot application to run on top of it, alongside a RabbitMQ image (later a service) which will be shared between this API and the order messaging service.
 
 > Note: The first time it gets executed it'll take quite some time to download both RabbitMQ and maven/jdk images as well as the `pom.xml` dependencies, so be patient while it's doing its job!
 
@@ -56,7 +68,7 @@ The API consists of the following core components:
 
 3. Three repositories, each dealing with their respective model/POJO: `DeliveryOrderRepository`, `RestaurantRepository` and `MealRepository`
 
-4. A `DistanceMatrixClient` interface implementation to query [Google Maps Distance Matrix API](https://developers.google.com/maps/documentation/distance-matrix/start) about the ETA between two given points represented by their lat/lng float values. There is also a mock implementation for local/integration tests whose idea is to avoid making requests to the actual Google API.
+4. A `DistanceMatrixClient` interface implementation to query *Google Maps Distance Matrix API* about the ETA between two given points represented by their lat/lng float values. There is also a mock implementation for local/integration tests whose idea is to avoid making requests to the actual Google API.
 
 5. A set of classes dealing with producing RabbitMQ messages which will be consumed by the order messaging service.
 
@@ -82,9 +94,10 @@ There are a number of things that had to be left outside this application just b
 
 5. Gain deeper understanding on testing Spring applications (both unit & component testing) and using [Mockito](https://site.mockito.org/) - which, in my opinion, is a whole world in its own right!
 
-6. Have the API deployed somewhere in the cloud with e.g. AWS, CloudFoundry, etc.
+<a name="wishlist-db"></a>
+6. Switch the DB engine to something more robust like MySQL or PostgreSQL. I admit I tried plugging in Spring Boot PostgreSQL dependency and it didn't work out upfront - I had authentication issues. I googled up a bit but the solution to it seemed non-trivial so I decided to move forward with the rest of the application trusting I could go back to it eventually - which unfortunately didn't happen :(
 
-### <a name="wishlist-db"></a>Database
+7. Have the API deployed somewhere in the cloud with e.g. AWS, CloudFoundry, etc.
 
 ## Author
 
