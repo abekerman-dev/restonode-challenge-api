@@ -12,6 +12,4 @@ public interface MealRepository extends JpaRepository<Meal, Long> {
 	@Query("select m from Meal m where m.id in :ids")
 	List<Meal> findByIdList(List<Long> ids);
 
-	@Query("select m from Meal m join m.restaurant restaurant on restaurant.id = ?1")
-	List<Meal> findByRestaurantId(Long restaurantId);
 }
