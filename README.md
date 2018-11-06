@@ -26,7 +26,7 @@ So let's explore these alternatives further:
 
 ### Running manually
 
-This can be achieved simply by cloning/downloading this repo and executing `mvn spring-boot:run` but prior to this you'll have to make sure there's a RabbitMQ server instance running.
+This can be achieved simply by cloning/downloading this repo and executing `mvn spring-boot:run` ([maven](https://maven.apache.org/) must be already installed) but prior to this you'll have to make sure there's a RabbitMQ server instance running.
 
 In order to achieve this, run `docker-compose -f docker-compose-rabbitMQ-only.yml up` and it will launch a RabbitMQ instance in your `localhost` which this API can send messages to.
 
@@ -42,9 +42,33 @@ Just run `docker-compose up` and it'll trigger the build of a maven image with t
 
 #### The API is now up and running and can start serving the frontend and sending messages to the order messaging service.
 
-### High-level architecture
+## High-level architecture
+
+### Code
+
+This API is just a [Spring Boot](http://spring.io/projects/spring-boot) application set up using [Spring Initializr](https://start.spring.io/), hence most of the application's design/architecture was already decided (and simplified!) for us.
+
+The API consists of the following core components:
+
+1. A single `RestonodeController` class handling all the REST requests and responses (tied to an `ExceptionHandlerAdvice` class to help handle exceptions within the controller)
+
+2. A single `RestonodeService` implementation handling all the API's business logic
+
+3. Three repositories, each dealing with their respective model/POJO: `DeliveryOrderRepository`, `RestaurantRepository` and `MealRepository`
+
+4. A `DistanceMatrixClient` interface implementation to query [Google Maps Distance Matrix API](https://developers.google.com/maps/documentation/distance-matrix/start) about the ETA between two given points represented by their lat/lng float values. There is also a mock implementation for local/integration tests whose idea is to avoid making requests to the actual Google API.
+
+5. A set of classes dealing with producing RabbitMQ messages which will be consumed by the order messaging service.
+
+6. Finally, the model/POJO classes which make up the data model of the application.
+
+### Database
+
+The database is a plain H2 in-memory database which comes "out of the box" with Spring Initializr. No big changes should be made in order to have a more robust, production-ready DB engine in place of it (please see [here](#wishlist-db) for more details)
 
 ## Wishlist, a.k.a what's been left outside (lack of time is to blame!)
+
+### <a name="wishlist-db"></a>Database
 
 ## Author
 
