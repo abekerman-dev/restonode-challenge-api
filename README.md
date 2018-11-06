@@ -22,7 +22,7 @@ So in order to run the whole *Restonode* system there are two alternatives:
     
 > Of course, you'll first have to clone/download this repo and then follow either of the execution alternatives below.
 
-> In either case, you'll have to set up [Google Maps Distance Matrix API](https://developers.google.com/maps/documentation/distance-matrix/start) API key so that the application can work properly. See below for how to tackle it in both cases.
+> In either case, you'll have to set up [Google Maps Distance Matrix](https://developers.google.com/maps/documentation/distance-matrix/start) API key so that the application can work properly. See below for how to tackle it in both cases.
 
 So let's explore these alternatives further:
 
