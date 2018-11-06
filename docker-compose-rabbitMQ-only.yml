@@ -1,0 +1,9 @@
+# use this file to get a RabbitMQ server up and running 
+# if you want to run both this app and the backend API manually
+# (i.e. with mvn spring-boot:run) without docker-compose
+
+rabbitmq:
+  image: rabbitmq:management
+  ports:
+    - "5672:5672" #JMS Port
+    - "15672:15672" #Management Port - default user:pass = guest:guest
