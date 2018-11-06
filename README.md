@@ -38,7 +38,7 @@ In order to export it, you can use the `.env.sample` file in the root of this re
 
 Next, we have to launch a RabbitMQ server instance. In order to achieve this, run `docker-compose -f docker-compose-rabbitMQ-only.yml up` and it will launch a RabbitMQ instance in your `localhost` which this API can send messages to.
 
-Lastly, let's run the application by executing `mvn spring-boot:run`. Of course, ([maven](https://maven.apache.org/) must be already installed).
+Lastly, let's run the application by executing `mvn spring-boot:run`. Of course, [maven](https://maven.apache.org/) must be already installed.
 
 In order to get the other two components up and running as well, please refer to each repo's *README* file where you'll find instructions on how to do that just like here.
 
