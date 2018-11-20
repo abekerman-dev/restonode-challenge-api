@@ -4,8 +4,8 @@
 
 This repo contains the RESTful API of the *Restonode* restaurants management system which is made up of two other components/repos:
 
-1. [Order messaging service](https://github.com/abekerman-dev/truenorth-restonode-challenge-order-messaging-service) 
-2. [Front end](https://github.com/abekerman-dev/truenorth-restonode-challenge-frontend)
+1. [Order messaging service](https://github.com/abekerman-dev/restonode-challenge-order-messaging-service) 
+2. [Front end](https://github.com/abekerman-dev/restonode-challenge-frontend)
     
 The former handles incoming RabbitMQ messages sent through this API upon creation of restaurant delivery orders, whereas the latter is a website where customers can make their orders and restaurant owners can manage their businesses by adding meals to be delivered, all of these interactions being handled by this API.
 
