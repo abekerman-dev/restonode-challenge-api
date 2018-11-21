@@ -94,8 +94,7 @@ There are a number of things that had to be left outside this application just b
 
 5. Gain deeper understanding on testing Spring applications (both unit & component testing) and using [Mockito](https://site.mockito.org/) - which, in my opinion, is a whole world in its own right!
 
-<a name="wishlist-db"></a>
-6. Switch the DB engine to something more robust like MySQL or PostgreSQL. I admit I tried plugging in Spring Boot PostgreSQL dependency and it didn't work out upfront - I had authentication issues. I googled up a bit but the solution to it seemed non-trivial so I decided to move forward with the rest of the application trusting I could go back to it eventually - which unfortunately didn't happen :(
+6. <a name="wishlist-db"></a>Switch the DB engine to something more robust like MySQL or PostgreSQL. I admit I tried plugging in Spring Boot PostgreSQL dependency and it didn't work out upfront - I had authentication issues. I googled up a bit but the solution to it seemed non-trivial so I decided to move forward with the rest of the application trusting I could go back to it eventually - which unfortunately didn't happen :(
 
 7. Have the API deployed somewhere in the cloud with e.g. AWS, CloudFoundry, etc.
 
