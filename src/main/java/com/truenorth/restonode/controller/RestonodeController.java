@@ -103,7 +103,7 @@ public class RestonodeController {
 	}
 
 	/**
-	 * Endpoint to add a rating to an existing restaurant
+	 * Endpoint to add a meal to an existing restaurant
 	 * 
 	 * @param id
 	 * @param meal
